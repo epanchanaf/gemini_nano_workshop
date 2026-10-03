@@ -1,0 +1,18 @@
+# Android and Gradle build outputs
+.gradle/
+build/
+**/build/
+.kotlin/
+
+# Local Android SDK configuration
+local.properties
+
+# Android Studio / IntelliJ local state
+.idea/
+*.iml
+
+# Operating-system files
+.DS_Store
+
+# Generated presentation workspace
+.pptx-build/
