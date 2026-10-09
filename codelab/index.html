@@ -1,217 +1,85 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Codelab para crear una app Android con Gemini Nano y ML Kit GenAI." />
-    <title>Gemini Nano con ML Kit | Codelab</title>
-    <style>
-      :root { --blue:#1a73e8; --ink:#202124; --muted:#5f6368; --line:#dadce0; --bg:#f8f9fa; --green:#e6f4ea; --amber:#fef7e0; }
-      * { box-sizing:border-box; }
-      body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.65 Arial, sans-serif; }
-      header { background:#fff; border-bottom:1px solid var(--line); padding:15px max(24px, calc((100% - 1120px)/2)); }
-      header a { color:var(--muted); font-size:.9rem; text-decoration:none; }
-      main { display:grid; grid-template-columns:245px minmax(0, 760px); gap:42px; max-width:1120px; margin:0 auto; padding:42px 24px 80px; }
-      nav { position:sticky; top:24px; align-self:start; border-left:2px solid var(--line); padding-left:16px; }
-      nav a { display:block; color:var(--muted); font-size:.88rem; padding:5px 0; text-decoration:none; }
-      nav a:hover { color:var(--blue); }
-      article { background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 1px 2px #0000000d; overflow:hidden; }
-      .hero { padding:42px 48px 32px; border-bottom:1px solid var(--line); }
-      .eyebrow { color:var(--blue); font-size:.82rem; font-weight:bold; letter-spacing:.08em; text-transform:uppercase; }
-      h1 { font-size:2.3rem; line-height:1.2; margin:10px 0 15px; }
-      h2 { font-size:1.55rem; line-height:1.3; margin:0 0 20px; scroll-margin-top:25px; }
-      h3 { font-size:1.1rem; margin:26px 0 8px; }
-      p { margin:0 0 16px; } section { padding:34px 48px; border-bottom:1px solid var(--line); }
-      ul, ol { padding-left:24px; margin:0 0 18px; } li { margin:6px 0; }
-      .meta { display:flex; flex-wrap:wrap; gap:9px; margin-top:20px; } .tag { background:#e8f0fe; border-radius:20px; color:#174ea6; font-size:.84rem; padding:4px 10px; }
-      .duration { color:var(--muted); font-size:.9rem; margin-top:-12px; }
-      .callout { border-radius:7px; margin:22px 0; padding:15px 18px; } .positive { background:var(--green); border-left:4px solid #34a853; } .negative { background:var(--amber); border-left:4px solid #f9ab00; }
-      code { background:#f1f3f4; border-radius:3px; font: .9em ui-monospace, SFMono-Regular, Consolas, monospace; padding:1px 4px; }
-      pre { background:#202124; border-radius:7px; color:#e8eaed; overflow:auto; padding:17px; } pre code { background:transparent; color:inherit; padding:0; }
-      table { border-collapse:collapse; display:block; overflow:auto; margin:18px 0; width:100%; } th, td { border:1px solid var(--line); padding:10px; text-align:left; vertical-align:top; } th { background:#f1f3f4; }
-      a { color:var(--blue); } .check { color:#137333; font-weight:bold; } footer { color:var(--muted); font-size:.9rem; padding:25px 48px; }
-      @media (max-width:800px) { main { display:block; padding:20px 12px 50px; } nav { display:none; } .hero, section { padding:28px 24px; } h1 { font-size:1.9rem; } }
-    </style>
-  </head>
-  <body>
-    <header><a href="https://github.com/epanchanaf/gemini_nano_workshop">← Volver al repositorio</a></header>
-    <main>
-      <nav aria-label="Índice">
-        <a href="#inicio">Antes de comenzar</a><a href="#proyecto">Proyecto inicial</a><a href="#dependencias">Dependencias</a><a href="#estado">Disponibilidad y descarga</a><a href="#resumen">Resumen</a><a href="#chat">Chat y streaming</a><a href="#extensiones">Más capacidades</a><a href="#pruebas">Pruebas</a><a href="#final">Final</a>
-      </nav>
-      <article>
-        <div class="hero">
-          <div class="eyebrow">Android · ML Kit · Gemini Nano</div>
-          <h1>Crea una app de IA en el dispositivo con Gemini Nano y ML Kit</h1>
-          <p>Construye una aplicación Jetpack Compose que resume, corrige, reescribe, describe imágenes y conversa localmente mediante AI Core.</p>
-          <div class="meta"><span class="tag">75 minutos</span><span class="tag">Intermedio</span><span class="tag">Kotlin</span><span class="tag">Jetpack Compose</span></div>
-        </div>
-
-        <section id="inicio"><h2>Antes de comenzar</h2><p class="duration">Duración: 5 min</p>
-          <p>Construirás una aplicación Android en español que usa las APIs GenAI de ML Kit con Gemini Nano disponible en el dispositivo. No llama a un modelo de generación en la nube: AI Core administra la disponibilidad y la descarga de los componentes compatibles.</p>
-          <h3>Aprenderás a</h3><ul><li>Configurar ML Kit GenAI en una app Compose.</li><li>Representar disponibilidad, descarga, generación y errores con <code>Flow</code>.</li><li>Aislar clientes de ML Kit en repositorios inyectables.</li><li>Mostrar resultados en streaming y liberar recursos correctamente.</li></ul>
-          <h3>Necesitas</h3><ul><li>Android Studio y JDK 17.</li><li>Un teléfono físico compatible con Gemini Nano y AI Core, Android 14 o posterior.</li><li>Conectividad durante la descarga inicial.</li></ul>
-          <div class="callout positive">Comprueba primero la <a href="https://developers.google.com/ml-kit/genai">compatibilidad de ML Kit GenAI</a>. La disponibilidad depende del hardware, Android, AI Core y cada API.</div>
-        </section>
-
-        <section id="proyecto"><h2>Obtén y ejecuta el proyecto inicial</h2><p class="duration">Duración: 5 min</p>
-          <p>Abre el repositorio en Android Studio, espera la sincronización de Gradle y elige el teléfono compatible como destino. El módulo ejecutable es <code>app</code>.</p>
-          <pre><code>android {
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Codelab práctico de Gemini Nano y ML Kit GenAI en Android.">
+  <title>Gemini Nano con ML Kit | Codelab</title>
+  <style>
+    :root{--blue:#1a73e8;--ink:#202124;--muted:#5f6368;--line:#dadce0;--bg:#f8f9fa;--card:#fff;--tip:#e6f4ea;--warn:#fef7e0}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:84px}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Arial,sans-serif}a{color:#185abc}.top{height:64px;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:18px;padding:0 max(20px,calc((100vw - 1440px)/2));background:#fff;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:9px;color:var(--ink);font-size:20px;text-decoration:none;white-space:nowrap}.logo{display:grid;place-items:center;width:30px;height:30px;border-radius:50% 50% 50% 6px;background:linear-gradient(135deg,#4285f4,#7baaf7);color:white;font-weight:bold}.title{flex:1;overflow:hidden;color:var(--muted);font-size:14px;text-overflow:ellipsis;white-space:nowrap}.repo{border:1px solid var(--line);border-radius:4px;padding:7px 10px;font-size:14px;font-weight:bold;text-decoration:none;white-space:nowrap}.progress-shell{position:fixed;top:63px;right:0;left:0;z-index:6;height:3px}.progress{width:0;height:3px;background:var(--blue);transition:width .25s}.layout{display:grid;grid-template-columns:260px minmax(0,760px);gap:42px;max-width:1120px;margin:auto;padding:35px 24px 80px}.toc{position:sticky;top:95px;align-self:start;max-height:calc(100vh - 120px);overflow:auto}.toc-meta{margin:0 0 16px;color:var(--muted);font-size:13px}.toc ol{margin:0;padding:0;list-style:none;border-left:1px solid var(--line)}.toc a{display:block;position:relative;padding:8px 8px 8px 16px;color:var(--muted);font-size:14px;line-height:1.25;text-decoration:none}.toc a:before{position:absolute;top:0;bottom:0;left:-1px;width:2px;background:transparent;content:""}.toc a:hover,.toc a.active{color:#185abc;font-weight:bold}.toc a.active:before{background:var(--blue)}.toc-footer{margin:22px 0 0 16px;color:var(--muted);font-size:12px}.course{overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:0 1px 2px #0002}.hero{padding:44px 50px 38px;background:linear-gradient(140deg,#edf4ff,#fff 65%);border-bottom:1px solid var(--line)}.eyebrow{margin-bottom:12px;color:#185abc;font-size:13px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase}h1{margin:0;font-size:38px;line-height:1.17;letter-spacing:-.4px}.lede{max-width:660px;margin:18px 0;color:#3c4043;font-size:19px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.chip{border:1px solid #d2e3fc;border-radius:20px;background:#fff;color:#185abc;font-size:13px;padding:4px 10px}.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px;padding-top:28px;border-top:1px solid #d2e3fc}.intro-grid h2{font-size:19px}.intro-grid ul{padding-left:20px}.start{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:28px}.button{display:inline-block;border:0;border-radius:4px;background:var(--blue);box-shadow:0 1px 2px #0004;color:#fff;cursor:pointer;font-weight:bold;padding:10px 17px;text-decoration:none}.duration{color:var(--muted);font-size:14px}.step{padding:40px 50px;border-bottom:1px solid var(--line)}.heading{display:flex;gap:14px;align-items:baseline;margin-bottom:20px}.number{color:#185abc;font-size:14px;font-weight:bold}h2{margin:0;font-size:27px;line-height:1.25}h3{margin:26px 0 9px;font-size:19px}p{margin:0 0 17px}ul,ol{margin:0 0 20px;padding-left:24px}li{margin:6px 0}code{border-radius:3px;background:#f1f3f4;font:.9em ui-monospace,SFMono-Regular,Consolas,monospace;padding:1px 4px}pre{overflow:auto;margin:22px 0;border-radius:6px;background:#202124;color:#e8eaed;padding:18px;line-height:1.5}pre code{background:none;color:inherit;padding:0}.callout{display:flex;gap:12px;margin:25px 0;border-radius:4px;padding:15px 17px}.callout b{display:block}.callout p{margin:0}.tip{border-left:4px solid #34a853;background:var(--tip)}.warning{border-left:4px solid #f9ab00;background:var(--warn)}table{display:block;overflow:auto;width:100%;margin:22px 0;border-collapse:collapse}th,td{min-width:130px;border:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}th{background:#f1f3f4;font-size:14px}.check{display:flex;align-items:center;gap:10px;margin-top:30px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}.check input{width:18px;height:18px;accent-color:var(--blue)}.nav{display:flex;justify-content:space-between;gap:14px;margin-top:33px}.back,.next{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:4px;background:#fff;color:#185abc;font-weight:bold;padding:9px 13px;text-decoration:none}.next{margin-left:auto;border-color:var(--blue);background:var(--blue);color:#fff}.final{background:#f8fbff}.license{color:var(--muted);font-size:12px}@media(max-width:850px){.title{display:none}.layout{display:block;padding:20px 12px 54px}.toc{position:relative;top:auto;max-height:none;margin-bottom:18px}.toc ol{display:grid;grid-template-columns:repeat(2,1fr);border:0}.toc a{border:1px solid var(--line);margin:-1px 0 0 -1px;padding:9px}.toc a:before,.toc-footer{display:none}.hero,.step{padding:30px 25px}h1{font-size:31px}.intro-grid{grid-template-columns:1fr}}@media(max-width:480px){.top{height:58px;padding:0 14px}.brand{font-size:17px}.repo{font-size:12px;padding:6px 8px}.progress-shell{top:57px}.toc ol{grid-template-columns:1fr}.hero,.step{padding:26px 19px}h1{font-size:28px}h2{font-size:23px}.lede{font-size:17px}}
+  </style>
+</head>
+<body>
+  <header class="top"><a class="brand" href="#intro"><span class="logo">✦</span>Nano Codelabs</a><span class="title">Gemini Nano con ML Kit: IA generativa en el dispositivo</span><a class="repo" href="https://github.com/epanchanaf/gemini_nano_workshop">Ver código ↗</a></header>
+  <div class="progress-shell" aria-hidden="true"><div class="progress" id="progress"></div></div>
+  <div class="layout">
+    <aside class="toc"><p class="toc-meta">◷ 1 h 37 min · Nivel intermedio</p><ol>
+      <li><a class="active" href="#intro">1. Introducción</a></li><li><a href="#setup">2. Configura el proyecto</a></li><li><a href="#clients">3. Añade ML Kit GenAI</a></li><li><a href="#availability">4. Gestiona el modelo</a></li><li><a href="#summary">5. Crea el resumen</a></li><li><a href="#chat">6. Implementa el chat</a></li><li><a href="#features">7. Añade más capacidades</a></li><li><a href="#test">8. Prueba la app</a></li><li><a href="#finish">9. ¡Felicitaciones!</a></li>
+    </ol><p class="toc-footer">© 2026 Edgardo Panchana<br><a href="https://github.com/epanchanaf/gemini_nano_workshop">Repositorio del taller</a></p></aside>
+    <main class="course">
+      <section class="hero" id="intro" data-step="1"><div class="eyebrow">Android · IA en el dispositivo</div><h1>Crea una app con Gemini Nano y ML Kit</h1><p class="lede">Integra tareas generativas locales en una app Android con Kotlin, Jetpack Compose, Hilt y las APIs GenAI de ML Kit.</p><div class="chips"><span class="chip">Kotlin</span><span class="chip">Jetpack Compose</span><span class="chip">ML Kit GenAI</span><span class="chip">Gemini Nano</span></div><div class="intro-grid"><div><h2>Qué aprenderás</h2><ul><li>Configurar ML Kit GenAI y sus clientes.</li><li>Gestionar disponibilidad y descarga.</li><li>Mostrar respuestas parciales en Compose.</li><li>Validar tokens, entradas y errores.</li></ul></div><div><h2>Qué necesitas</h2><ul><li>Android Studio y JDK 17.</li><li>Teléfono Android 14+ compatible con AI Core.</li><li>Conectividad para la primera descarga.</li><li>Conocimientos básicos de Compose y corrutinas.</li></ul></div></div><div class="start"><a class="button" href="#setup">Comenzar</a><span class="duration">Duración estimada: 1 hora y 37 minutos</span></div></section>
+      <section class="step" id="setup" data-step="2"><div class="heading"><span class="number">2.</span><h2>Configura el proyecto</h2></div><p>Abre el repositorio en Android Studio, espera la sincronización y elige un teléfono compatible. El módulo ejecutable es <code>app</code>.</p><pre><code>android {
     namespace = "com.sdkecuador.gemininano"
     compileSdk = 36
-    defaultConfig {
-        applicationId = "com.sdkecuador.gemininano"
-        minSdk = 34
-        targetSdk = 36
-    }
-}</code></pre>
-          <p>También puedes generar el APK de depuración desde la raíz:</p><pre><code>./gradlew assembleDebug</code></pre>
-          <p>La actividad instala solamente el tema y el grafo de navegación:</p>
-          <pre><code>@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent { AppTheme { AppNavigation() } }
-    }
-}</code></pre>
-          <div class="callout negative">El proyecto puede compilar aunque AI Core no esté disponible. Por eso la app debe consultar el estado antes de solicitar una inferencia.</div>
-        </section>
-
-        <section id="dependencias"><h2>Añade ML Kit GenAI y crea los clientes</h2><p class="duration">Duración: 10 min</p>
-          <p>Añade las APIs de cada capacidad en <code>app/build.gradle.kts</code>:</p>
-          <pre><code>implementation("com.google.mlkit:genai-summarization:1.0.0-beta1")
+    defaultConfig { minSdk = 34; targetSdk = 36 }
+}</code></pre><p>Genera un APK de depuración desde la raíz:</p><pre><code>./gradlew assembleDebug</code></pre><div class="callout warning"><div><b>Importante</b><p>El proyecto compila aunque AI Core no esté disponible. La app debe comprobar la disponibilidad antes de inferir.</p></div></div><label class="check"><input type="checkbox" data-complete="2"> El proyecto sincroniza y reconoce el dispositivo.</label><div class="nav"><a class="back" href="#intro">← Introducción</a><a class="next" href="#clients">Siguiente: ML Kit GenAI →</a></div></section>
+      <section class="step" id="clients" data-step="3"><div class="heading"><span class="number">3.</span><h2>Añade ML Kit GenAI</h2></div><p>Declara las APIs de cada capacidad en <code>app/build.gradle.kts</code>:</p><pre><code>implementation("com.google.mlkit:genai-summarization:1.0.0-beta1")
 implementation("com.google.mlkit:genai-image-description:1.0.0-beta1")
 implementation("com.google.mlkit:genai-rewriting:1.0.0-beta1")
 implementation("com.google.mlkit:genai-proofreading:1.0.0-beta1")
-implementation("com.google.mlkit:genai-prompt:1.0.0-beta4")</code></pre>
-          <p>Protege al resto de la app de las llamadas estáticas del SDK con una fábrica:</p>
-          <pre><code>interface GenAiClientFactory {
+implementation("com.google.mlkit:genai-prompt:1.0.0-beta4")</code></pre><p>Aísla los clientes del SDK en una fábrica para que los repositorios sean testeables:</p><pre><code>interface GenAiClientFactory {
     fun createGenerativeModel(): GenerativeModel
     fun createSummarizer(): Summarizer
     fun createProofreader(): Proofreader
     fun createRewriter(style: RewriteStyle): Rewriter
     fun createImageDescriber(): ImageDescriber
-}</code></pre>
-          <p>La implementación configura cada cliente. Este resumen acepta artículos en inglés y devuelve tres viñetas:</p>
-          <pre><code>override fun createSummarizer(): Summarizer = Summarization.getClient(
-    SummarizerOptions.builder(context)
-        .setInputType(SummarizerOptions.InputType.ARTICLE)
-        .setOutputType(SummarizerOptions.OutputType.THREE_BULLETS)
-        .setLanguage(SummarizerOptions.Language.ENGLISH)
-        .build()
-)
-
-override fun createGenerativeModel(): GenerativeModel = Generation.getClient()</code></pre>
-          <p>Finalmente, vincula la fábrica con Hilt:</p><pre><code>@Module
+}</code></pre><pre><code>@Module
 @InstallIn(SingletonComponent::class)
 abstract class GenAiModule {
     @Binds
     abstract fun bindGenAiClientFactory(factory: MlKitGenAiClientFactory): GenAiClientFactory
-}</code></pre>
-        </section>
-
-        <section id="estado"><h2>Modela disponibilidad y descarga antes de inferir</h2><p class="duration">Duración: 15 min</p>
-          <p>Una función no siempre está lista. Traduce el estado del SDK a un modelo propio y haz que todas las pantallas consuman la misma secuencia de operación:</p>
-          <pre><code>sealed interface AiOperationState&lt;out T&gt; {
+}</code></pre><label class="check"><input type="checkbox" data-complete="3"> Las dependencias y la fábrica están configuradas.</label><div class="nav"><a class="back" href="#setup">← Anterior</a><a class="next" href="#availability">Siguiente: modelo →</a></div></section>
+      <section class="step" id="availability" data-step="4"><div class="heading"><span class="number">4.</span><h2>Gestiona disponibilidad y descarga</h2></div><p>Una función no siempre está lista. Traduce el estado del SDK a un modelo propio y emite una secuencia uniforme para la UI.</p><pre><code>sealed interface AiOperationState&lt;out T&gt; {
     data object Preparing : AiOperationState&lt;Nothing&gt;
     data class Downloading(val progress: ModelDownloadProgress) : AiOperationState&lt;Nothing&gt;
     data class Generating&lt;T&gt;(val partialResult: T? = null) : AiOperationState&lt;T&gt;
     data class Success&lt;T&gt;(val result: T) : AiOperationState&lt;T&gt;
     data class Failure(val error: AiException) : AiOperationState&lt;Nothing&gt;
-}</code></pre>
-          <p>Centraliza la preparación de cualquier capacidad:</p>
-          <pre><code>internal suspend fun prepareModel(
-    statusProvider: suspend () -&gt; AiCoreFeatureStatus,
-    download: suspend () -&gt; Unit
-) {
-    when (statusProvider()) {
+}</code></pre><pre><code>internal suspend fun prepareModel(status: suspend () -&gt; AiCoreFeatureStatus, download: suspend () -&gt; Unit) {
+    when (status()) {
         AiCoreFeatureStatus.DOWNLOADABLE -&gt; download()
         AiCoreFeatureStatus.AVAILABLE -&gt; Unit
         else -&gt; throw AiException.ModelUnavailable(...)
     }
-}</code></pre>
-          <div class="callout negative">No trates <code>DOWNLOADABLE</code> como listo. Espera a que finalice la descarga, comprueba de nuevo el estado y solo entonces genera contenido.</div>
-        </section>
-
-        <section id="resumen"><h2>Implementa una capacidad especializada: resumen</h2><p class="duration">Duración: 15 min</p>
-          <p>Un repositorio <code>@ViewModelScoped</code> posee el cliente, valida las entradas, prepara el modelo y emite estados para la UI:</p>
-          <pre><code>@ViewModelScoped
-class SummarizationRepository @Inject constructor(
-    clientFactory: GenAiClientFactory
-) : AutoCloseable {
-    private val summarizer = clientFactory.createSummarizer()
-
-    fun summarizeText(text: String): Flow&lt;AiOperationState&lt;String&gt;&gt; = aiOperation(
-        validate = { validateTextInput(text, minimumCharacters = 400, maximumEstimatedTokens = 4_000) },
-        prepare = ::prepare
-    ) { onToken -&gt;
-        summarizer.runInference(
-            SummarizationRequest.builder(text).build(), onToken
-        ).await().summary
-    }
-
-    override fun close() = summarizer.close()
-}</code></pre>
-          <p>El ViewModel reduce los estados sin exponer el SDK a Compose:</p>
-          <pre><code>viewModelScope.launch(Dispatchers.IO) {
-    repository.summarizeText(text).collect { operation -&gt;
-        when (operation) {
-            AiOperationState.Preparing -&gt; setLoading()
-            is AiOperationState.Downloading -&gt; updateDownload(operation.progress)
-            is AiOperationState.Generating -&gt; appendPartial(operation.partialResult)
-            is AiOperationState.Success -&gt; showSummary(operation.result)
-            is AiOperationState.Failure -&gt; showError(operation.error.toUserMessage())
-        }
-    }
-}</code></pre>
-          <div class="callout positive">Llama a <code>repository.close()</code> en <code>onCleared()</code>. Los clientes ML Kit deben liberarse cuando acaba el ViewModel.</div>
-        </section>
-
-        <section id="chat"><h2>Añade el chat con Prompt API y streaming</h2><p class="duration">Duración: 20 min</p>
-          <p>Para solicitudes personalizadas usa <code>Generation</code>. Limita la salida y valida el conteo real de tokens después de componer el prompt y el historial:</p>
-          <pre><code>private suspend fun validatePromptTokens(request: GenerateContentRequest) {
+}</code></pre><div class="callout warning"><div><b>No continúes aún</b><p><code>DOWNLOADABLE</code> no equivale a listo: espera la descarga y vuelve a comprobar el estado.</p></div></div><label class="check"><input type="checkbox" data-complete="4"> La UI representa preparación, descarga y error.</label><div class="nav"><a class="back" href="#clients">← Anterior</a><a class="next" href="#summary">Siguiente: resumen →</a></div></section>
+      <section class="step" id="summary" data-step="5"><div class="heading"><span class="number">5.</span><h2>Crea el resumen</h2></div><p>El repositorio posee el cliente, valida la entrada, prepara el modelo y emite estados que el <code>ViewModel</code> adapta a la interfaz.</p><pre><code>fun summarizeText(text: String): Flow&lt;AiOperationState&lt;String&gt;&gt; = aiOperation(
+    validate = { validateTextInput(text, minimumCharacters = 400, maximumEstimatedTokens = 4_000) },
+    prepare = ::prepare
+) { onToken -&gt;
+    summarizer.runInference(SummarizationRequest.builder(text).build(), onToken).await().summary
+}</code></pre><div class="callout tip"><div><b>Buenas prácticas</b><p>Cierra el repositorio en <code>onCleared()</code>; las instancias de ML Kit usan recursos que deben liberarse junto con el ViewModel.</p></div></div><label class="check"><input type="checkbox" data-complete="5"> El resumen valida, descarga y actualiza la interfaz.</label><div class="nav"><a class="back" href="#availability">← Anterior</a><a class="next" href="#chat">Siguiente: chat →</a></div></section>
+      <section class="step" id="chat" data-step="6"><div class="heading"><span class="number">6.</span><h2>Implementa el chat con streaming</h2></div><p>Prompt API permite instrucciones personalizadas. Valida el conteo real de tokens después de combinar el prompt y el historial.</p><pre><code>private suspend fun validatePromptTokens(request: GenerateContentRequest) {
     val inputTokens = model.countTokens(request).totalTokens
     val allowed = (model.getTokenLimit() - MAX_CHAT_OUTPUT_TOKENS).coerceAtLeast(0)
     if (inputTokens &gt; allowed) throw AiException.InvalidInput(InputProblem.TEXT_TOO_LONG)
-}</code></pre>
-          <p>Emite fragmentos con <code>generateContentStream()</code>:</p>
-          <pre><code>fun streamResponse(prompt: String): Flow&lt;String&gt; = flow {
-    requireAvailable(featureStatus())
-    val request = GenerateContentRequest.Builder(TextPart(prompt))
-        .apply { maxOutputTokens = 256 }.build()
+}
+
+fun streamResponse(prompt: String): Flow&lt;String&gt; = flow {
+    val request = GenerateContentRequest.Builder(TextPart(prompt)).apply { maxOutputTokens = 256 }.build()
     validatePromptTokens(request)
-    emitAll(model.generateContentStream(request)
-        .map { it.candidates.firstOrNull()?.text.orEmpty() })
-}.requireResult()</code></pre>
-          <p>En <code>Generating</code>, crea una burbuja vacía la primera vez y agrega los siguientes fragmentos a esa misma burbuja. De ese modo el usuario ve la respuesta mientras se genera.</p>
-        </section>
-
-        <section id="extensiones"><h2>Extiende la app a imagen, corrección y reescritura</h2><p class="duration">Duración: 15 min</p>
-          <table><thead><tr><th>Función</th><th>Cliente</th><th>Precaución</th></tr></thead><tbody><tr><td>Corrección</td><td><code>Proofreader</code></td><td>Limita texto corto a 1&nbsp;024 tokens estimados.</td></tr><tr><td>Reescritura</td><td><code>Rewriter</code></td><td>Crea el cliente para el estilo elegido y cierra el anterior.</td></tr><tr><td>Imagen</td><td><code>GenerativeModel</code></td><td>Rechaza bitmaps reciclados o sobredimensionados.</td></tr></tbody></table>
-          <p>La descripción multimodal combina una imagen y una instrucción:</p>
-          <pre><code>val request = GenerateContentRequest.Builder(
-    ImagePart(bitmap),
-    TextPart("Describe esta imagen en una oración breve y objetiva.")
-).build()
-val description = generativeModel.generateContent(request)
-    .candidates.firstOrNull()?.text.orEmpty()</code></pre>
-          <div class="callout negative">Antes de inferir, ajusta las imágenes a 2&nbsp;048 px por lado y 4 megapíxeles como máximo. Esto evita errores de entrada y presión de memoria.</div>
-        </section>
-
-        <section id="pruebas"><h2>Prueba en un dispositivo y resuelve problemas</h2><p class="duration">Duración: 10 min</p>
-          <ol><li>Comprueba en Inicio los estados de Gemini Nano y cada función.</li><li>Descarga los componentes disponibles y observa el progreso.</li><li>Resume un texto de al menos 400 caracteres.</li><li>Envía un mensaje corto al chat y verifica que llega por fragmentos.</li><li>Elige una imagen dentro de los límites.</li></ol>
-          <pre><code>./gradlew testDebugUnitTest</code></pre>
-          <table><thead><tr><th>Síntoma</th><th>Acción</th></tr></thead><tbody><tr><td>No compatible</td><td>Verifica dispositivo, AI Core y actualización del sistema.</td></tr><tr><td>No inicia la generación</td><td>Completa la descarga y vuelve a consultar el estado.</td></tr><tr><td>Texto demasiado largo</td><td>Reduce la entrada o el historial; usa <code>countTokens()</code> en Prompt API.</td></tr><tr><td>Chat estático</td><td>Usa <code>generateContentStream()</code> y reduce los resultados parciales en StateFlow.</td></tr></tbody></table>
-        </section>
-
-        <section id="final"><h2>Felicitaciones</h2><p class="duration">Duración: 2 min</p>
-          <p class="check">✓ Has creado una app Compose que administra disponibilidad, descarga y generación local con Gemini Nano.</p>
-          <p>Revisa el código terminado: <a href="https://github.com/epanchanaf/gemini_nano_workshop/blob/master/app/src/main/java/com/sdkecuador/gemininano/data/genai/client/MlKitGenAiClientFactory.kt">fábrica de clientes</a>, <a href="https://github.com/epanchanaf/gemini_nano_workshop/blob/master/app/src/main/java/com/sdkecuador/gemininano/data/genai/repository/ChatRepository.kt">repositorio de chat</a> y <a href="https://github.com/epanchanaf/gemini_nano_workshop/blob/master/app/src/main/java/com/sdkecuador/gemininano/ui/home/chat/ChatViewModel.kt">ViewModel de chat</a>.</p>
-          <p>Próximos pasos: salida estructurada para extracción, caché de prefijo para prompts largos y pruebas con una fábrica de clientes falsa.</p>
-        </section>
-        <footer>Creado por Edgardo Panchana · Material de taller sobre Gemini Nano y ML Kit.</footer>
-      </article>
+    emitAll(model.generateContentStream(request).map { it.candidates.firstOrNull()?.text.orEmpty() })
+}</code></pre><p>Al recibir el primer <code>Generating</code>, crea una burbuja vacía; agrega los fragmentos siguientes a la misma burbuja.</p><label class="check"><input type="checkbox" data-complete="6"> El chat actualiza la respuesta mientras el modelo genera.</label><div class="nav"><a class="back" href="#summary">← Anterior</a><a class="next" href="#features">Siguiente: capacidades →</a></div></section>
+      <section class="step" id="features" data-step="7"><div class="heading"><span class="number">7.</span><h2>Añade más capacidades</h2></div><table><thead><tr><th>Función</th><th>Cliente</th><th>Precaución</th></tr></thead><tbody><tr><td>Corrección</td><td><code>Proofreader</code></td><td>Limita la entrada corta a 1 024 tokens estimados.</td></tr><tr><td>Reescritura</td><td><code>Rewriter</code></td><td>Crea el cliente para el estilo y cierra el anterior.</td></tr><tr><td>Imagen</td><td><code>GenerativeModel</code></td><td>Rechaza bitmaps reciclados o sobredimensionados.</td></tr></tbody></table><pre><code>val request = GenerateContentRequest.Builder(
+    ImagePart(bitmap), TextPart("Describe esta imagen en una oración breve y objetiva.")
+).build()</code></pre><div class="callout warning"><div><b>Valida las imágenes</b><p>Reduce cada selección a 2 048 píxeles por lado y 4 megapíxeles antes de inferir.</p></div></div><label class="check"><input type="checkbox" data-complete="7"> Las funciones especializadas respetan sus límites.</label><div class="nav"><a class="back" href="#chat">← Anterior</a><a class="next" href="#test">Siguiente: pruebas →</a></div></section>
+      <section class="step" id="test" data-step="8"><div class="heading"><span class="number">8.</span><h2>Prueba la app</h2></div><ol><li>Comprueba Gemini Nano y las funciones en Inicio.</li><li>Descarga los componentes disponibles y observa el progreso.</li><li>Resume un texto de más de 400 caracteres.</li><li>Envía un mensaje y verifica que la respuesta llega por fragmentos.</li><li>Describe una imagen dentro de los límites.</li></ol><pre><code>./gradlew testDebugUnitTest</code></pre><table><thead><tr><th>Síntoma</th><th>Acción</th></tr></thead><tbody><tr><td>Dispositivo no compatible</td><td>Verifica AI Core, hardware y actualizaciones.</td></tr><tr><td>No inicia la generación</td><td>Completa la descarga y vuelve a consultar el estado.</td></tr><tr><td>Texto largo</td><td>Reduce texto o historial; usa <code>countTokens()</code>.</td></tr><tr><td>Chat estático</td><td>Usa <code>generateContentStream()</code> y resultados parciales.</td></tr></tbody></table><label class="check"><input type="checkbox" data-complete="8"> Probé una función en un dispositivo compatible.</label><div class="nav"><a class="back" href="#features">← Anterior</a><a class="next" href="#finish">Siguiente: final →</a></div></section>
+      <section class="step final" id="finish" data-step="9"><div class="heading"><span class="number">9.</span><h2>¡Felicitaciones!</h2></div><p style="font-size:18px">Construiste una app Compose que administra disponibilidad, descarga y generación local de Gemini Nano mediante ML Kit.</p><p>Explora el código completo: <a href="https://github.com/epanchanaf/gemini_nano_workshop/blob/master/app/src/main/java/com/sdkecuador/gemininano/data/genai/client/MlKitGenAiClientFactory.kt">fábrica de clientes</a>, <a href="https://github.com/epanchanaf/gemini_nano_workshop/blob/master/app/src/main/java/com/sdkecuador/gemininano/data/genai/repository/ChatRepository.kt">repositorio de chat</a> y <a href="https://github.com/epanchanaf/gemini_nano_workshop/blob/master/app/src/main/java/com/sdkecuador/gemininano/ui/home/chat/ChatViewModel.kt">ViewModel del chat</a>.</p><div class="callout tip"><div><b>Siguientes pasos</b><p>Añade salida estructurada, caché de prefijo para prompts largos y una fábrica falsa para las pruebas.</p></div></div><label class="check"><input type="checkbox" data-complete="9"> Completé el codelab.</label><div class="nav"><a class="back" href="#test">← Anterior</a><a class="next" href="#intro">Volver al inicio ↑</a></div><p class="license">Contenido del taller creado por Edgardo Panchana. Experiencia inspirada en la estructura de un codelab, sin utilizar marcas ni recursos de Google Codelabs.</p></section>
     </main>
-  </body>
+  </div>
+  <script>
+    const steps=[...document.querySelectorAll('[data-step]')],links=[...document.querySelectorAll('.toc a')],progress=document.querySelector('#progress'),checks=[...document.querySelectorAll('[data-complete]')],key='gemini-nano-codelab-completed',done=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
+    function active(step){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+step.id));progress.style.width=`${(Number(step.dataset.step)-1)/(steps.length-1)*100}%`}
+    checks.forEach(c=>{c.checked=done.has(c.dataset.complete);c.addEventListener('change',()=>{c.checked?done.add(c.dataset.complete):done.delete(c.dataset.complete);localStorage.setItem(key,JSON.stringify([...done]))})});
+    const observer=new IntersectionObserver(es=>{const s=es.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(s)active(s.target)},{rootMargin:'-20% 0px -60% 0px',threshold:[.05,.25,.5]});steps.forEach(s=>observer.observe(s));active(steps[0]);
+  </script>
+</body>
 </html>
