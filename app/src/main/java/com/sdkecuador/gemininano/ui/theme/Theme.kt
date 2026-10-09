@@ -20,6 +20,8 @@ fun AppTheme(
     MaterialTheme(
         colorScheme = when (palette) {
             "FOREST" -> paletteScheme(Color(0xFF2E7D32), Color(0xFFA5D6A7), useDarkTheme)
+            "DOMINICAN_REPUBLIC" -> paletteScheme(Color(0xFF003DA5), Color(0xFFCE1126), useDarkTheme)
+            "RAIN" -> paletteScheme(Color(0xFF546E7A), Color(0xFFB0BEC5), useDarkTheme)
             "OCEAN" -> paletteScheme(Color(0xFF006C80), Color(0xFF9CD9E8), useDarkTheme)
             "SUNSET" -> paletteScheme(Color(0xFFA34720), Color(0xFFFFC3A3), useDarkTheme)
             "LAVENDER" -> paletteScheme(Color(0xFF74529A), Color(0xFFD8C4F0), useDarkTheme)

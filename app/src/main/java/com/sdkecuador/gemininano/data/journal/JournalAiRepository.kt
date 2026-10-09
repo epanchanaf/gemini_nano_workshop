@@ -44,7 +44,7 @@ class JournalAiRepository @Inject constructor(clientFactory: GenAiClientFactory)
             Eres el asistente local de un diario personal. Interpreta SOLO la orden hablada.
             CREATE: redacta una entrada fiel al relato, en primera persona; no inventes hechos.
             DELETE: elige targetIndex de la lista únicamente si la orden identifica una entrada sin ambigüedad. Si no, usa cero.
-            THEME: cambia la paleta de toda la app. Bosque/naturaleza=FOREST, mar=OCEAN, atardecer=SUNSET, flores/lila=LAVENDER. Si no corresponde, DEFAULT.
+            THEME: cambia la paleta de toda la app. Bosque/naturaleza=FOREST, República Dominicana/bandera dominicana/Quisqueya=DOMINICAN_REPUBLIC, lluvia/día lluvioso/tormenta=RAIN, mar=OCEAN, atardecer=SUNSET, flores/lila=LAVENDER. Si no corresponde, DEFAULT.
             Para CREATE, usa CANSADO si expresa agotamiento; APRENDIZAJE si celebra conocimiento; elige otra emoción cuando corresponda.
             Fecha actual: ${LocalDate.now()}
             Entradas existentes (más reciente primero):

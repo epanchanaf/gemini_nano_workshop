@@ -164,6 +164,6 @@ class JournalViewModel @Inject constructor(
 
     companion object {
         private val MOODS = setOf("CANSADO", "ALEGRE", "APRENDIZAJE", "TRANQUILO", "TRISTE", "NEUTRO")
-        private val PALETTES = setOf("DEFAULT", "FOREST", "SUNSET", "OCEAN", "LAVENDER")
+        private val PALETTES = setOf("DEFAULT", "FOREST", "DOMINICAN_REPUBLIC", "RAIN", "SUNSET", "OCEAN", "LAVENDER")
     }
 }

@@ -16,6 +16,6 @@ data class JournalDecision(
     var mood: String = "NEUTRO",
     @Guide(description = "Número de la entrada a eliminar; cero si no aplica", minimum = 0.0, maximum = 20.0)
     var targetIndex: Int = 0,
-    @Guide(description = "Paleta solicitada", enumValues = ["DEFAULT", "FOREST", "SUNSET", "OCEAN", "LAVENDER"])
+    @Guide(description = "Paleta solicitada", enumValues = ["DEFAULT", "FOREST", "DOMINICAN_REPUBLIC", "RAIN", "SUNSET", "OCEAN", "LAVENDER"])
     var palette: String = "DEFAULT"
 )
