@@ -9,7 +9,11 @@ plugins {
 
 android {
     namespace = "com.sdkecuador.gemininano"
-    compileSdk = 36
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         applicationId = "com.sdkecuador.gemininano"
@@ -64,6 +68,15 @@ dependencies {
     implementation(libs.hilt)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     ksp(libs.hilt.compiler)
+
+    // Diario local y superficies A2UI nativas de Android.
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.a2ui.compose.runtime)
+    implementation(libs.androidx.a2ui.compose.ui)
+    implementation(libs.androidx.material3.a2ui)
+    ksp("com.google.mlkit:genai-schema-compiler:1.0.0-alpha1")
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)

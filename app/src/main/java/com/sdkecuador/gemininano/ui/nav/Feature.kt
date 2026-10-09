@@ -51,6 +51,13 @@ sealed class Feature(
         R.drawable.ic_mic
     )
 
+    object Journal : Feature(
+        "journal",
+        "Diario por voz",
+        "Guarda vivencias y cambia colores con Gemini Nano",
+        R.drawable.ic_mic
+    )
+
     companion object {
         val featureScreens: List<Feature>
             get() = listOf(
@@ -59,7 +66,8 @@ sealed class Feature(
                 Rewrite,
                 ImageDescription,
                 Chat,
-                SpeechRecognition
+                SpeechRecognition,
+                Journal
             )
     }
 }

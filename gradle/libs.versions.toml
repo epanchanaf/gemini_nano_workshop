@@ -19,6 +19,8 @@ kotlinxCoroutines = "1.11.0"
 hilt = "2.60.1"
 hiltCompose = "1.3.0"
 ksp = "2.3.6"
+room = "2.8.5"
+a2ui = "1.0.0-alpha01"
 
 # Testing
 junit = "4.13.2"
@@ -43,6 +45,12 @@ androidx-compose-navigation = { group = "androidx.navigation", name = "navigatio
 
 # Lifecycle and ViewModel
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-a2ui-compose-runtime = { group = "androidx.a2ui.compose", name = "compose-runtime", version.ref = "a2ui" }
+androidx-a2ui-compose-ui = { group = "androidx.a2ui.compose", name = "compose-ui", version.ref = "a2ui" }
+androidx-material3-a2ui = { group = "androidx.compose.material3", name = "material3-a2ui", version.ref = "a2ui" }
 
 # Hilt and Dependency Injection
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }

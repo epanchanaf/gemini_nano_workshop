@@ -12,6 +12,7 @@ Aplicación Android de demostración para explorar capacidades de IA en el dispo
 - **Descripción de imágenes:** selecciona una imagen del dispositivo y genera una descripción breve y objetiva.
 - **Chat:** acepta texto o una imagen con una pregunta. Las respuestas a texto llegan progresivamente; las respuestas a imágenes aparecen al completarse.
 - **Reconocimiento de voz:** transcribe el micrófono en español y muestra resultados parciales durante el dictado.
+- **Diario por voz:** crea entradas locales a partir de un dictado, aplica colores según el tono de la vivencia y acepta órdenes habladas para eliminar una entrada o cambiar la paleta de la app. El borrado requiere confirmación.
 - **Estado del modelo:** consulta la disponibilidad de AI Core y de las funciones GenAI necesarias antes de usarlas.
 
 ## Tecnologías
@@ -22,6 +23,7 @@ Aplicación Android de demostración para explorar capacidades de IA en el dispo
 - Kotlin Coroutines y Flow para operaciones asíncronas y respuestas en streaming
 - ML Kit GenAI: Summarization, Proofreading, Rewriting, Image Description, Prompt/Generation y Speech Recognition
 - Gemini Nano a través de AI Core para las tareas generativas; Speech Recognition en modo Basic para dictado local
+- Room para las entradas y preferencias del diario; renderer A2UI oficial para mostrar cada entrada con componentes Compose Android
 
 ## Arquitectura de la app
 
@@ -50,6 +52,8 @@ Hilt proporciona los repositorios a los `ViewModel`, y `Navigation Compose` sepa
 Para probar el chat multimodal, abre **Chat**, toca el botón de imagen, elige una foto y envíala con una pregunta. También puedes enviarla sin escribir: se utilizará una instrucción breve para describirla. El chat conserva la imagen más reciente como contexto para preguntas posteriores. La descripción independiente usa [GenAI Image Description](https://developers.google.com/ml-kit/genai/image-description/android), que actualmente genera descripciones breves en inglés; las preguntas personalizadas sobre imágenes del chat usan [GenAI Prompt API](https://developers.google.com/ml-kit/genai/prompt/android/get-started).
 
 Para probar el dictado, abre **Reconocimiento de voz**, concede el permiso de micrófono y pulsa **Iniciar dictado**. La implementación usa `es-ES` y `MODE_BASIC` de [GenAI Speech Recognition](https://developers.google.com/ml-kit/genai/speech-recognition/android). Este modo utiliza el reconocedor tradicional del dispositivo, no Gemini Nano; el modo Advanced basado en GenAI solo está disponible en determinados equipos. La API de voz está en fase alpha y la disponibilidad del idioma depende del dispositivo.
+
+En **Diario por voz**, el dictado Basic transcribe la orden; Gemini Nano interpreta localmente si debe crear una entrada, identificar una entrada para borrar o cambiar el tema. La app valida esa decisión, guarda las entradas y el tema en Room, y reconstruye la vista de cada entrada como una superficie A2UI. Las órdenes de borrado ambiguas no eliminan nada. La base de datos guarda texto, no audio, y la app desactiva sus copias de seguridad.
 
 Los repositorios reciben una `GenAiClientFactory` por constructor. Hilt la enlaza con `MlKitGenAiClientFactory` mediante `GenAiModule`; esta implementación concentra las llamadas a `getClient()` y las opciones de ML Kit. La fábrica no almacena clientes: cada repositorio conserva y cierra los que solicita. El repositorio de estado crea clientes temporales por consulta y los cierra al terminar. En pruebas se puede pasar otra implementación de la fábrica para sustituir los clientes sin inicializar AICore.
 
@@ -91,7 +95,7 @@ La disponibilidad no es universal: cambia según el modelo Gemini Nano, el fabri
 - Android Studio con soporte para proyectos Kotlin/Compose y JDK 17.
 - Un dispositivo Android físico compatible con Gemini Nano y AI Core para las tareas generativas. Consulta la [lista de dispositivos compatibles](https://developers.google.com/ml-kit/genai). El dictado Basic requiere Android 12 (API 31) o superior; esta app exige Android 14.
 - Conexión a internet durante la configuración inicial y cuando el dispositivo deba descargar los modelos.
-- Android 14 (API 34) o superior; la app compila contra API 36.
+- Android 14 (API 34) o superior; la app compila contra Android SDK Platform 37.1 por el renderer A2UI. `targetSdk` sigue en 36.
 
 ## Ejecutar la aplicación
 

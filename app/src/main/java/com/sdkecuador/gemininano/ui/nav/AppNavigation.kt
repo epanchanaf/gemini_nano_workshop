@@ -11,6 +11,7 @@ import com.sdkecuador.gemininano.ui.home.proofread.ProofReadingScreen
 import com.sdkecuador.gemininano.ui.home.rewrite.RewriteScreen
 import com.sdkecuador.gemininano.ui.home.summarization.SummarizationScreen
 import com.sdkecuador.gemininano.ui.home.speech.SpeechRecognitionScreen
+import com.sdkecuador.gemininano.ui.home.journal.JournalScreen
 
 @Composable
 fun AppNavigation() {
@@ -43,6 +44,10 @@ fun AppNavigation() {
 
         composable(Feature.SpeechRecognition.route) {
             SpeechRecognitionScreen(onBack = { navController.navigateUp() })
+        }
+
+        composable(Feature.Journal.route) {
+            JournalScreen(onBack = { navController.navigateUp() })
         }
     }
 }
