@@ -1,6 +1,6 @@
 # Taller de Gemini Nano 🚀
 
-Aplicación Android de demostración para explorar capacidades de IA generativa en el dispositivo con **Gemini Nano** y las APIs GenAI de **ML Kit**. La interfaz está en español y permite probar tareas de texto e imagen sin enviar el contenido a un servicio de generación en la nube.
+Aplicación Android de demostración para explorar capacidades de IA en el dispositivo con **ML Kit**. Las tareas generativas usan **Gemini Nano** mediante AI Core; el dictado usa el modo Basic de reconocimiento de voz local. La interfaz está en español y permite probar tareas de texto, imagen y voz sin enviar el contenido a un servicio de generación en la nube.
 
 > El modelo o las funciones de ML Kit pueden requerir una descarga inicial desde el dispositivo compatible. La app muestra el estado de disponibilidad y el progreso de descarga antes de habilitar cada función.
 
@@ -10,7 +10,8 @@ Aplicación Android de demostración para explorar capacidades de IA generativa 
 - **Corrección:** detecta y corrige errores en mensajes cortos.
 - **Reescritura:** transforma un texto para reformularlo, acortarlo, ampliarlo o darle un tono amigable o profesional.
 - **Descripción de imágenes:** selecciona una imagen del dispositivo y genera una descripción breve y objetiva.
-- **Chat:** genera respuestas de texto por instrucciones y las muestra de forma progresiva.
+- **Chat:** acepta texto o una imagen con una pregunta. Las respuestas a texto llegan progresivamente; las respuestas a imágenes aparecen al completarse.
+- **Reconocimiento de voz:** transcribe el micrófono en español y muestra resultados parciales durante el dictado.
 - **Estado del modelo:** consulta la disponibilidad de AI Core y de las funciones GenAI necesarias antes de usarlas.
 
 ## Tecnologías
@@ -19,8 +20,8 @@ Aplicación Android de demostración para explorar capacidades de IA generativa 
 - Navigation Compose para la navegación entre pantallas
 - Hilt para inyección de dependencias
 - Kotlin Coroutines y Flow para operaciones asíncronas y respuestas en streaming
-- ML Kit GenAI: Summarization, Proofreading, Rewriting, Image Description y Prompt/Generation
-- Gemini Nano a través de AI Core
+- ML Kit GenAI: Summarization, Proofreading, Rewriting, Image Description, Prompt/Generation y Speech Recognition
+- Gemini Nano a través de AI Core para las tareas generativas; Speech Recognition en modo Basic para dictado local
 
 ## Arquitectura de la app
 
@@ -44,7 +45,11 @@ Pantallas Compose ──► ViewModel ──► Repositorio ──► ML Kit Gen
 
 **Flujo de una capacidad:** la pantalla envía una acción al `ViewModel`; este consulta el estado de la función en su repositorio. Si el componente está disponible, ejecuta la inferencia; si es descargable, observa el progreso antes de continuar; si no es compatible, entrega un mensaje de error a la UI. Los repositorios se cierran al finalizar el ciclo de vida de su `ViewModel` para liberar los clientes de IA.
 
-Hilt proporciona los repositorios a los `ViewModel`, y `Navigation Compose` separa las rutas de resumen, corrección, reescritura, descripción de imágenes y chat. El chat usa una respuesta en *streaming*, por lo que la UI añade fragmentos de texto a medida que el modelo los genera.
+Hilt proporciona los repositorios a los `ViewModel`, y `Navigation Compose` separa las rutas de resumen, corrección, reescritura, descripción de imágenes, chat y reconocimiento de voz. El chat usa Prompt API: las solicitudes de texto llegan en *streaming*, mientras que las de imagen envían `ImagePart` y `TextPart` juntos y muestran la respuesta al completarse. La pantalla independiente de descripción de imágenes sigue usando la API especializada `ImageDescriber`.
+
+Para probar el chat multimodal, abre **Chat**, toca el botón de imagen, elige una foto y envíala con una pregunta. También puedes enviarla sin escribir: se utilizará una instrucción breve para describirla. El chat conserva la imagen más reciente como contexto para preguntas posteriores. La descripción independiente usa [GenAI Image Description](https://developers.google.com/ml-kit/genai/image-description/android), que actualmente genera descripciones breves en inglés; las preguntas personalizadas sobre imágenes del chat usan [GenAI Prompt API](https://developers.google.com/ml-kit/genai/prompt/android/get-started).
+
+Para probar el dictado, abre **Reconocimiento de voz**, concede el permiso de micrófono y pulsa **Iniciar dictado**. La implementación usa `es-ES` y `MODE_BASIC` de [GenAI Speech Recognition](https://developers.google.com/ml-kit/genai/speech-recognition/android). Este modo utiliza el reconocedor tradicional del dispositivo, no Gemini Nano; el modo Advanced basado en GenAI solo está disponible en determinados equipos. La API de voz está en fase alpha y la disponibilidad del idioma depende del dispositivo.
 
 Los repositorios reciben una `GenAiClientFactory` por constructor. Hilt la enlaza con `MlKitGenAiClientFactory` mediante `GenAiModule`; esta implementación concentra las llamadas a `getClient()` y las opciones de ML Kit. La fábrica no almacena clientes: cada repositorio conserva y cierra los que solicita. El repositorio de estado crea clientes temporales por consulta y los cierra al terminar. En pruebas se puede pasar otra implementación de la fábrica para sustituir los clientes sin inicializar AICore.
 
@@ -52,7 +57,7 @@ El contrato de errores de datos es `AiException`: distingue entrada inválida, m
 
 Cada operación de usuario expone un `Flow<AiOperationState<T>>`. El flujo ordena la validación, la preparación, el progreso de descarga, la generación parcial, el resultado final y los errores. Las pantallas solo reducen esos estados a su estado visual; no conocen el orden de llamadas ni las excepciones de ML Kit.
 
-La demo muestra y aplica límites de entrada antes de la inferencia: resumen acepta al menos 400 caracteres y hasta 4 000 tokens estimados, mientras que corrección, reescritura y chat se limitan a 1 024 tokens estimados para mantener los ejemplos breves. El chat además consulta el conteo y límite reales del modelo antes de generar. La descripción de imágenes ajusta las selecciones a un máximo de 2 048 píxeles por lado y 4 megapíxeles.
+La demo muestra y aplica límites de entrada antes de la inferencia: resumen acepta al menos 400 caracteres y hasta 4 000 tokens estimados, mientras que corrección, reescritura y el texto del chat se limitan a 1 024 tokens estimados para mantener los ejemplos breves. El chat además consulta el conteo y límite reales del modelo antes de generar. Tanto la descripción de imágenes como el chat ajustan las selecciones a un máximo de 2 048 píxeles por lado y 4 megapíxeles.
 
 ## Estructura del proyecto
 
@@ -84,7 +89,7 @@ La disponibilidad no es universal: cambia según el modelo Gemini Nano, el fabri
 ## Requisitos
 
 - Android Studio con soporte para proyectos Kotlin/Compose y JDK 17.
-- Un dispositivo Android físico compatible con Gemini Nano y AI Core. Consulta la [lista de dispositivos compatibles](https://developers.google.com/ml-kit/genai).
+- Un dispositivo Android físico compatible con Gemini Nano y AI Core para las tareas generativas. Consulta la [lista de dispositivos compatibles](https://developers.google.com/ml-kit/genai). El dictado Basic requiere Android 12 (API 31) o superior; esta app exige Android 14.
 - Conexión a internet durante la configuración inicial y cuando el dispositivo deba descargar los modelos.
 - Android 14 (API 34) o superior; la app compila contra API 36.
 
@@ -94,6 +99,8 @@ La disponibilidad no es universal: cambia según el modelo Gemini Nano, el fabri
 2. Espera a que Gradle sincronice las dependencias.
 3. Conecta un dispositivo compatible, selecciónalo como destino y ejecuta la app.
 4. En la pantalla principal, revisa el estado de cada capacidad y descarga el componente requerido si la app lo solicita.
+
+En **Resumen de texto**, el botón **Cargar ejemplo** rellena una entrada de prueba; también puedes escribir o pegar tu propio artículo.
 
 También puedes generar un APK de depuración desde la terminal:
 

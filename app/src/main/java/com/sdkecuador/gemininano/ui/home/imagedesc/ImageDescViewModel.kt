@@ -1,9 +1,12 @@
 package com.sdkecuador.gemininano.ui.home.imagedesc
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.mlkit.genai.common.GenAiException
 import com.sdkecuador.gemininano.bytesToMB
+import com.sdkecuador.gemininano.data.genai.model.AiException
 import com.sdkecuador.gemininano.data.genai.model.AiOperationState
 import com.sdkecuador.gemininano.data.genai.model.ModelDownloadProgress
 import com.sdkecuador.gemininano.data.genai.repository.ImageDescriptionRepository
@@ -55,7 +58,10 @@ class ImageDescViewModel @Inject constructor(
                 mbDownloaded = 0.0
             )
         }
-        is AiOperationState.Failure -> setError(operation.error.toUserMessage())
+        is AiOperationState.Failure -> {
+            Log.e("ImageDescription", "Fallo al describir la imagen", operation.error)
+            setError(operation.error.toImageDescriptionMessage())
+        }
     }
 
     fun clearDescription() {
@@ -87,4 +93,12 @@ class ImageDescViewModel @Inject constructor(
         repository.close()
         super.onCleared()
     }
+}
+
+private fun AiException.toImageDescriptionMessage(): String {
+    val sdkError = generateSequence(cause) { it.cause }
+        .filterIsInstance<GenAiException>()
+        .firstOrNull()
+    return if (sdkError == null) toUserMessage()
+    else "${toUserMessage()} Código ML Kit: ${sdkError.errorCode}."
 }

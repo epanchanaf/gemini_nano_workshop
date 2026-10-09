@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,6 +33,17 @@ import com.sdkecuador.gemininano.ui.components.InputLimitInfo
 import com.sdkecuador.gemininano.data.genai.model.AiInputLimits
 import com.sdkecuador.gemininano.data.genai.model.estimatedTokenCount
 
+private val summaryExampleText = """
+    La inteligencia artificial en los dispositivos móviles permite realizar tareas complejas sin
+    enviar información personal a servidores externos. Modelos compactos como Gemini Nano pueden
+    resumir textos, corregir redacción y responder preguntas directamente en el teléfono. Este
+    enfoque reduce la latencia, ayuda a proteger la privacidad y permite que algunas funciones
+    sigan disponibles cuando la conexión a internet es limitada. Sin embargo, su funcionamiento
+    depende de que el dispositivo sea compatible, tenga suficiente espacio de almacenamiento y
+    cuente con los componentes del sistema actualizados. Por eso, las aplicaciones deben comprobar
+    primero si el modelo está disponible y guiar a la persona durante la descarga inicial.
+""".trimIndent()
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SummarizationScreen(
@@ -41,7 +51,6 @@ fun SummarizationScreen(
     viewModel: SummarizationViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val clipboard = LocalClipboard.current
 
     if (state.summary.isNotBlank()) {
         ModalBottomSheet(
@@ -69,15 +78,7 @@ fun SummarizationScreen(
     SummarizationContent(
         state = state,
         onInputChange = viewModel::onInputChange,
-        onPaste = {
-            val clip = clipboard.nativeClipboard.primaryClip
-            val text = if (clip != null && clip.itemCount > 0) {
-                clip.getItemAt(0).text?.toString().orEmpty()
-            } else {
-                ""
-            }
-            viewModel.onInputChange(text)
-        },
+        onLoadExample = { viewModel.onInputChange(summaryExampleText) },
         onSummarize = viewModel::summarize,
         onBack = onBack
     )
@@ -87,7 +88,7 @@ fun SummarizationScreen(
 private fun SummarizationContent(
     state: SummarizationState,
     onInputChange: (String) -> Unit,
-    onPaste: () -> Unit,
+    onLoadExample: () -> Unit,
     onSummarize: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -146,10 +147,10 @@ private fun SummarizationContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(
-                    onClick = onPaste,
+                    onClick = onLoadExample,
                     enabled = !state.isLoading && !state.isDownloadingModel
                 ) {
-                    Text("Pegar")
+                    Text("Cargar ejemplo")
                 }
                 Button(
                     onClick = onSummarize,

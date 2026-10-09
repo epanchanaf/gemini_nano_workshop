@@ -91,10 +91,10 @@ class RepositoryErrorsTest {
     @Test
     fun statusQueryFailureIsNotReportedAsUnsupportedDevice() {
         val failure = IllegalStateException("AICore temporalmente inaccesible")
-        val repository = ImageDescriptionRepository(PromptOnlyFactory {
-            modelStub { method ->
+        val repository = ImageDescriptionRepository(ImageOnlyFactory {
+            imageDescriberStub { method ->
                 when (method) {
-                    "checkStatus" -> throw failure
+                    "checkFeatureStatus" -> throw failure
                     "close" -> null
                     else -> error("Llamada inesperada: $method")
                 }
@@ -136,10 +136,10 @@ class RepositoryErrorsTest {
     @Test
     fun synchronousDownloadFailureIsAlsoTranslated() {
         val failure = IllegalStateException("No se pudo iniciar la descarga")
-        val repository = ImageDescriptionRepository(PromptOnlyFactory {
-            modelStub { method ->
+        val repository = ImageDescriptionRepository(ImageOnlyFactory {
+            imageDescriberStub { method ->
                 when (method) {
-                    "download" -> throw failure
+                    "downloadFeature" -> throw failure
                     "close" -> null
                     else -> error("Llamada inesperada: $method")
                 }
@@ -147,7 +147,7 @@ class RepositoryErrorsTest {
         })
         try {
             val thrown = assertThrows(AiException.DownloadFailed::class.java) {
-                runBlocking { repository.downloadProgress().toList() }
+                runBlocking { repository.download {} }
             }
             assertSame(failure, thrown.cause)
         } finally {

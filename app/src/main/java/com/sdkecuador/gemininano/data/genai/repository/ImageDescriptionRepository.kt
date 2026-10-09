@@ -1,9 +1,7 @@
 package com.sdkecuador.gemininano.data.genai.repository
 
 import android.graphics.Bitmap
-import com.google.mlkit.genai.prompt.GenerateContentRequest
-import com.google.mlkit.genai.prompt.ImagePart
-import com.google.mlkit.genai.prompt.TextPart
+import com.google.mlkit.genai.imagedescription.ImageDescriptionRequest
 import com.sdkecuador.gemininano.data.genai.client.GenAiClientFactory
 import com.sdkecuador.gemininano.data.genai.mapper.toRepositoryStatus
 import com.sdkecuador.gemininano.data.genai.model.AiCoreFeatureStatus
@@ -15,26 +13,25 @@ import com.sdkecuador.gemininano.data.genai.model.isSupportedImageSize
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 
 @ViewModelScoped
 class ImageDescriptionRepository @Inject constructor(
     clientFactory: GenAiClientFactory
 ) : AutoCloseable {
-    private val generativeModel = clientFactory.createGenerativeModel()
+    private val imageDescriber = clientFactory.createImageDescriber()
 
     suspend fun featureStatus(): AiCoreFeatureStatus = aiCall(AiOperation.STATUS_CHECK) {
-        generativeModel.checkStatus().toRepositoryStatus()
+        imageDescriber.checkFeatureStatus().toRepositoryStatus()
     }
 
-    fun downloadProgress(): Flow<ModelDownloadProgress> =
-        flow { emitAll(generativeModel.download()) }
-            .toModelDownloadProgress()
-            .withAiErrors(AiOperation.DOWNLOAD)
+    suspend fun download(onProgress: (ModelDownloadProgress) -> Unit) {
+        aiCall(AiOperation.DOWNLOAD) {
+            imageDescriber.downloadFeature(modelDownloadCallback(onProgress))
+        }
+    }
 
     suspend fun prepare(onProgress: (ModelDownloadProgress) -> Unit) {
-        prepareModel(::featureStatus) { downloadProgress().collect(onProgress) }
+        prepareModel(::featureStatus) { download(onProgress) }
     }
 
     fun validateInput(bitmap: Bitmap) {
@@ -48,19 +45,16 @@ class ImageDescriptionRepository @Inject constructor(
 
     fun describeImage(bitmap: Bitmap): Flow<AiOperationState<String>> = aiOperation(
         validate = { validateInput(bitmap) },
-        prepare = ::prepare
-    ) { describe(bitmap) }
+        prepare = ::prepare,
+        generate = { describe(bitmap) }
+    )
 
     suspend fun describe(bitmap: Bitmap): String = aiCall(AiOperation.GENERATION) {
         validateInput(bitmap)
         requireAvailable(featureStatus())
-        generativeModel.generateContent(
-            GenerateContentRequest.Builder(
-                ImagePart(bitmap),
-                TextPart("Describe esta imagen en una oración breve y objetiva.")
-            ).build()
-        ).candidates.firstOrNull()?.text.orEmpty().requireResult()
+        imageDescriber.runInference(ImageDescriptionRequest.builder(bitmap).build())
+            .description.requireResult()
     }
 
-    override fun close() = generativeModel.close()
+    override fun close() = imageDescriber.close()
 }

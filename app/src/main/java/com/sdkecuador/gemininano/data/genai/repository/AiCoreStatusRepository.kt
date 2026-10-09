@@ -37,7 +37,7 @@ class AiCoreStatusRepository @Inject constructor(
                     AiCoreRuntimeStatus(
                         "ML Kit: describir imágenes",
                         "SDK GenAI 1.0.0-beta1",
-                        imageDescriber.checkFeatureStatus().await().toRepositoryStatus()
+                        imageDescriber.checkFeatureStatus().toRepositoryStatus()
                     )
                 )
             )

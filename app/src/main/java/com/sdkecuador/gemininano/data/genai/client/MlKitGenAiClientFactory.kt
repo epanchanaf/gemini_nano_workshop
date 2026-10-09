@@ -1,7 +1,6 @@
 package com.sdkecuador.gemininano.data.genai.client
 
 import android.content.Context
-import com.google.mlkit.genai.imagedescription.ImageDescriber
 import com.google.mlkit.genai.imagedescription.ImageDescriberOptions
 import com.google.mlkit.genai.imagedescription.ImageDescription
 import com.google.mlkit.genai.prompt.Generation
@@ -15,6 +14,9 @@ import com.google.mlkit.genai.rewriting.Rewriting
 import com.google.mlkit.genai.summarization.Summarization
 import com.google.mlkit.genai.summarization.Summarizer
 import com.google.mlkit.genai.summarization.SummarizerOptions
+import com.google.mlkit.genai.speechrecognition.SpeechRecognition
+import com.google.mlkit.genai.speechrecognition.SpeechRecognizer
+import com.google.mlkit.genai.speechrecognition.SpeechRecognizerOptions
 import com.sdkecuador.gemininano.data.genai.model.RewriteStyle
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -46,9 +48,12 @@ class MlKitGenAiClientFactory @Inject constructor(
             .build()
     )
 
-    override fun createImageDescriber(): ImageDescriber = ImageDescription.getClient(
-        ImageDescriberOptions.builder(context).build()
+    override fun createImageDescriber(): ImageDescriptionClient = MlKitImageDescriptionClient(
+        ImageDescription.getClient(ImageDescriberOptions.builder(context).build())
     )
+
+    override fun createSpeechRecognizer(options: SpeechRecognizerOptions): SpeechRecognizer =
+        SpeechRecognition.getClient(options)
 }
 
 private fun RewriteStyle.toMlKitOutputType(): Int = when (this) {

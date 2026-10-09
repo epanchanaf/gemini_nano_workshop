@@ -1,10 +1,17 @@
 package com.sdkecuador.gemininano.ui.home.chat
 
+import android.graphics.Bitmap
+
 data class ChatUiState(
     val messages: List<ChatMessage> = listOf(
-        ChatMessage("¡Hola! Soy Gemini Nano. Pregúntame lo que quieras.", false)
+        ChatMessage(
+            message = "¡Hola! Soy Gemini Nano. Pregúntame lo que quieras.",
+            isFromUser = false,
+            includeInContext = false
+        )
     ),
     val input: String = "",
+    val pendingImage: Bitmap? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val mbToDownload: Double = 0.0,
@@ -16,5 +23,7 @@ data class ChatUiState(
 
 data class ChatMessage(
     val message: String,
-    val isFromUser: Boolean
+    val isFromUser: Boolean,
+    val includeInContext: Boolean = true,
+    val image: Bitmap? = null
 )

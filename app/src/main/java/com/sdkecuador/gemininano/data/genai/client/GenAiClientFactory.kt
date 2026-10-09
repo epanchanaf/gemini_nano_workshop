@@ -1,10 +1,11 @@
 package com.sdkecuador.gemininano.data.genai.client
 
-import com.google.mlkit.genai.imagedescription.ImageDescriber
 import com.google.mlkit.genai.prompt.GenerativeModel
 import com.google.mlkit.genai.proofreading.Proofreader
 import com.google.mlkit.genai.rewriting.Rewriter
 import com.google.mlkit.genai.summarization.Summarizer
+import com.google.mlkit.genai.speechrecognition.SpeechRecognizer
+import com.google.mlkit.genai.speechrecognition.SpeechRecognizerOptions
 import com.sdkecuador.gemininano.data.genai.model.RewriteStyle
 
 /**
@@ -20,5 +21,7 @@ interface GenAiClientFactory {
 
     fun createRewriter(style: RewriteStyle): Rewriter
 
-    fun createImageDescriber(): ImageDescriber
+    fun createImageDescriber(): ImageDescriptionClient
+
+    fun createSpeechRecognizer(options: SpeechRecognizerOptions): SpeechRecognizer
 }

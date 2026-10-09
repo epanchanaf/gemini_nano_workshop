@@ -85,5 +85,7 @@ dependencies {
     implementation("com.google.mlkit:genai-proofreading:1.0.0-beta1")
     //noinspection UseTomlInstead
     implementation("com.google.mlkit:genai-prompt:1.0.0-beta4")
+    // Speech-to-text local, powered by ML Kit GenAI / AICore.
+    implementation("com.google.mlkit:genai-speech-recognition:1.0.0-alpha1")
     //noinspection UseTomlInstead
 }

@@ -44,6 +44,13 @@ sealed class Feature(
         R.drawable.ic_ai
     )
 
+    object SpeechRecognition : Feature(
+        "speech_recognition",
+        "Reconocimiento de voz",
+        "Transcribe tu voz a texto de forma local",
+        R.drawable.ic_mic
+    )
+
     companion object {
         val featureScreens: List<Feature>
             get() = listOf(
@@ -51,7 +58,8 @@ sealed class Feature(
                 Proofreading,
                 Rewrite,
                 ImageDescription,
-                Chat
+                Chat,
+                SpeechRecognition
             )
     }
 }

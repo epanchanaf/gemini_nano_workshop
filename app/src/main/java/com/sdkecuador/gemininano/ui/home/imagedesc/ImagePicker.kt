@@ -1,7 +1,6 @@
 package com.sdkecuador.gemininano.ui.home.imagedesc
 
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,9 +23,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.sdkecuador.gemininano.data.genai.model.AiInputLimits
-import kotlin.math.roundToInt
-import com.sdkecuador.gemininano.data.genai.model.imageScaleForInputLimit
+import com.sdkecuador.gemininano.ui.components.decodeAiImage
 
 @Composable
 fun ImagePickerScreen(
@@ -40,16 +37,7 @@ fun ImagePickerScreen(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            val source = ImageDecoder.createSource(context.contentResolver, it)
-            val bmp = ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
-                val originalWidth = info.size.width
-                val originalHeight = info.size.height
-                val scale = imageScaleForInputLimit(originalWidth, originalHeight)
-                decoder.setTargetSize(
-                    (originalWidth * scale).roundToInt().coerceAtLeast(1),
-                    (originalHeight * scale).roundToInt().coerceAtLeast(1)
-                )
-            }
+            val bmp = decodeAiImage(context, it)
             bitmap = bmp
             onImagePicked(bmp)
         }
