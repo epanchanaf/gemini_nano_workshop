@@ -7,6 +7,9 @@ import kotlin.math.sqrt
 object AiInputLimits {
     const val MIN_SUMMARY_CHARACTERS = 400
     const val MAX_SUMMARY_TOKENS = 4_000
+    /** Maximum accepted by the ML Kit Proofreading and Rewriting APIs. */
+    const val MAX_PROOFREADING_REWRITING_TOKENS = 255
+    /** Demo limit for short Prompt API text before the exact model limit is checked. */
     const val MAX_SHORT_TEXT_TOKENS = 1_024
     const val MAX_IMAGE_EDGE_PX = 2_048
     const val MAX_IMAGE_PIXELS = 4_000_000

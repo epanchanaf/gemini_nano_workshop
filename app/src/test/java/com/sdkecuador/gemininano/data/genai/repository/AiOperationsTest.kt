@@ -1,6 +1,7 @@
 package com.sdkecuador.gemininano.data.genai.repository
 
 import com.google.mlkit.genai.common.GenAiException
+import com.sdkecuador.gemininano.data.genai.model.AiCoreFeatureStatus
 import com.sdkecuador.gemininano.data.genai.model.AiException
 import com.sdkecuador.gemininano.data.genai.model.AiInputLimits
 import com.sdkecuador.gemininano.data.genai.model.AiOperationState
@@ -91,6 +92,34 @@ class AiOperationsTest {
         assertEquals(InputProblem.TEXT_TOO_LONG, thrown.problem)
         assertEquals(AiInputLimits.MAX_SHORT_TEXT_TOKENS, thrown.maximumTokens)
         assertEquals(AiInputLimits.MAX_SHORT_TEXT_TOKENS + 1, thrown.actualTokens)
+    }
+
+    @Test
+    fun proofreadingAndRewritingLimitRejects256EstimatedTokens() {
+        val thrown = assertThrows(AiException.InvalidInput::class.java) {
+            validateTextInput(
+                text = "a".repeat(AiInputLimits.MAX_PROOFREADING_REWRITING_TOKENS * 4 + 1),
+                maximumEstimatedTokens = AiInputLimits.MAX_PROOFREADING_REWRITING_TOKENS
+            )
+        }
+
+        assertEquals(InputProblem.TEXT_TOO_LONG, thrown.problem)
+        assertEquals(AiInputLimits.MAX_PROOFREADING_REWRITING_TOKENS, thrown.maximumTokens)
+    }
+
+    @Test
+    fun preparationChecksAvailabilityAgainAfterDownload() = runBlocking {
+        val statuses = ArrayDeque(
+            listOf(AiCoreFeatureStatus.DOWNLOADABLE, AiCoreFeatureStatus.AVAILABLE)
+        )
+        var downloaded = false
+
+        prepareModel(
+            statusProvider = { statuses.removeFirst() },
+            download = { downloaded = true }
+        )
+
+        assertEquals(true, downloaded)
     }
 
     @Test

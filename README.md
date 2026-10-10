@@ -61,7 +61,7 @@ El contrato de errores de datos es `AiException`: distingue entrada inválida, m
 
 Cada operación de usuario expone un `Flow<AiOperationState<T>>`. El flujo ordena la validación, la preparación, el progreso de descarga, la generación parcial, el resultado final y los errores. Las pantallas solo reducen esos estados a su estado visual; no conocen el orden de llamadas ni las excepciones de ML Kit.
 
-La demo muestra y aplica límites de entrada antes de la inferencia: resumen acepta al menos 400 caracteres y hasta 4 000 tokens estimados, mientras que corrección, reescritura y el texto del chat se limitan a 1 024 tokens estimados para mantener los ejemplos breves. El chat además consulta el conteo y límite reales del modelo antes de generar. Tanto la descripción de imágenes como el chat ajustan las selecciones a un máximo de 2 048 píxeles por lado y 4 megapíxeles.
+La demo muestra y aplica límites de entrada antes de la inferencia: resumen acepta artículos en inglés de al menos 400 caracteres y hasta 4 000 tokens estimados. Corrección y reescritura aceptan hasta 255 tokens, el máximo de sus APIs de ML Kit, y están configuradas para español. El texto del chat se limita a 1 024 tokens estimados para mantener los ejemplos breves; el chat además consulta el conteo y límite reales del modelo antes de generar. Tanto la descripción de imágenes como el chat ajustan las selecciones a un máximo de 2 048 píxeles por lado y 4 megapíxeles.
 
 ## Estructura del proyecto
 

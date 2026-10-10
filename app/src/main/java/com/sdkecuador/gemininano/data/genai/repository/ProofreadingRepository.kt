@@ -34,7 +34,7 @@ class ProofreadingRepository @Inject constructor(
 
     fun validateInput(text: String) = validateTextInput(
         text = text,
-        maximumEstimatedTokens = AiInputLimits.MAX_SHORT_TEXT_TOKENS
+        maximumEstimatedTokens = AiInputLimits.MAX_PROOFREADING_REWRITING_TOKENS
     )
 
     fun correct(text: String): Flow<AiOperationState<String>> = aiOperation(

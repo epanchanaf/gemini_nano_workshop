@@ -34,14 +34,13 @@ import com.sdkecuador.gemininano.data.genai.model.AiInputLimits
 import com.sdkecuador.gemininano.data.genai.model.estimatedTokenCount
 
 private val summaryExampleText = """
-    La inteligencia artificial en los dispositivos móviles permite realizar tareas complejas sin
-    enviar información personal a servidores externos. Modelos compactos como Gemini Nano pueden
-    resumir textos, corregir redacción y responder preguntas directamente en el teléfono. Este
-    enfoque reduce la latencia, ayuda a proteger la privacidad y permite que algunas funciones
-    sigan disponibles cuando la conexión a internet es limitada. Sin embargo, su funcionamiento
-    depende de que el dispositivo sea compatible, tenga suficiente espacio de almacenamiento y
-    cuente con los componentes del sistema actualizados. Por eso, las aplicaciones deben comprobar
-    primero si el modelo está disponible y guiar a la persona durante la descarga inicial.
+    On-device artificial intelligence lets mobile apps perform complex tasks without sending
+    personal information to external servers. Compact models such as Gemini Nano can summarize
+    articles, help rewrite text, and answer questions directly on the phone. This approach reduces
+    latency, helps protect privacy, and allows some features to remain available when connectivity
+    is limited. However, it depends on compatible hardware, sufficient storage, and up-to-date
+    system components. Apps should therefore check whether a model feature is available and guide
+    the user through its initial download before making an inference request.
 """.trimIndent()
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,7 +100,7 @@ private fun SummarizationContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                "Escribe o pega un artículo de al menos 400 caracteres y hasta 4 000 tokens estimados:",
+                "Escribe o pega un artículo en inglés de al menos 400 caracteres y hasta 4 000 tokens estimados:",
                 style = MaterialTheme.typography.bodyLarge
             )
 

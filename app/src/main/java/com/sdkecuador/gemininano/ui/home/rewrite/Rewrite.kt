@@ -70,7 +70,7 @@ private fun RewriteContent(
             OutlinedTextField(
                 value = state.input,
                 onValueChange = { candidate ->
-                    if (candidate.estimatedTokenCount() <= AiInputLimits.MAX_SHORT_TEXT_TOKENS) {
+                    if (candidate.estimatedTokenCount() <= AiInputLimits.MAX_PROOFREADING_REWRITING_TOKENS) {
                         onInputChange(candidate)
                     }
                 },
@@ -84,8 +84,8 @@ private fun RewriteContent(
 
             InputLimitInfo(
                 currentEstimatedTokens = state.input.estimatedTokenCount(),
-                maximumTokens = AiInputLimits.MAX_SHORT_TEXT_TOKENS,
-                description = "Límite de demo para textos cortos",
+                maximumTokens = AiInputLimits.MAX_PROOFREADING_REWRITING_TOKENS,
+                description = "Límite máximo de ML Kit para reescritura",
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 

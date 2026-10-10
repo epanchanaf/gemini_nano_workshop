@@ -30,7 +30,7 @@ class RewriteViewModel @Inject constructor(
     private var job: Job? = null
 
     fun onInputChange(input: String) {
-        if (input.estimatedTokenCount() > AiInputLimits.MAX_SHORT_TEXT_TOKENS) return
+        if (input.estimatedTokenCount() > AiInputLimits.MAX_PROOFREADING_REWRITING_TOKENS) return
         _state.update { it.copy(input = input, suggestion = "", errorMessage = null) }
     }
 

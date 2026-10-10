@@ -59,7 +59,7 @@ private fun ProofReadingContent(
             OutlinedTextField(
                 value = state.input,
                 onValueChange = { candidate ->
-                    if (candidate.estimatedTokenCount() <= AiInputLimits.MAX_SHORT_TEXT_TOKENS) {
+                    if (candidate.estimatedTokenCount() <= AiInputLimits.MAX_PROOFREADING_REWRITING_TOKENS) {
                         onInputChange(candidate)
                     }
                 },
@@ -72,8 +72,8 @@ private fun ProofReadingContent(
 
             InputLimitInfo(
                 currentEstimatedTokens = state.input.estimatedTokenCount(),
-                maximumTokens = AiInputLimits.MAX_SHORT_TEXT_TOKENS,
-                description = "Límite de demo para textos cortos"
+                maximumTokens = AiInputLimits.MAX_PROOFREADING_REWRITING_TOKENS,
+                description = "Límite máximo de ML Kit para corrección"
             )
 
             GenerationStatus(

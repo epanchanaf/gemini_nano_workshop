@@ -122,7 +122,10 @@ internal suspend fun prepareModel(
     download: suspend () -> Unit
 ) {
     when (val status = statusProvider()) {
-        AiCoreFeatureStatus.DOWNLOADABLE -> download()
+        AiCoreFeatureStatus.DOWNLOADABLE -> {
+            download()
+            requireAvailable(statusProvider())
+        }
         else -> requireAvailable(status)
     }
 }

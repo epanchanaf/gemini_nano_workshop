@@ -37,14 +37,14 @@ class MlKitGenAiClientFactory @Inject constructor(
     override fun createProofreader(): Proofreader = Proofreading.getClient(
         ProofreaderOptions.builder(context)
             .setInputType(ProofreaderOptions.InputType.KEYBOARD)
-            .setLanguage(ProofreaderOptions.Language.ENGLISH)
+            .setLanguage(ProofreaderOptions.Language.SPANISH)
             .build()
     )
 
     override fun createRewriter(style: RewriteStyle): Rewriter = Rewriting.getClient(
         RewriterOptions.builder(context)
             .setOutputType(style.toMlKitOutputType())
-            .setLanguage(RewriterOptions.Language.ENGLISH)
+            .setLanguage(RewriterOptions.Language.SPANISH)
             .build()
     )
 
